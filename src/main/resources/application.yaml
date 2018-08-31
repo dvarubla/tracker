@@ -1,0 +1,17 @@
+spring:
+  mvc:
+    favicon:
+      enabled: false
+  main:
+    banner_mode: 'off'
+server:
+  port: 12345
+  ssl:
+    key-store: classpath:keystore.p12
+    keyStoreType: PKCS12
+    keyAlias: tomcat
+---
+spring:
+  profiles: test
+server:
+  port: 12347

@@ -1,0 +1,72 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+bootJar {
+    baseName = 'test-task'
+    version =  '1.0.0'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/groovy'
+        }
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-devtools")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    compile("org.springframework:spring-jdbc")
+    compile('com.oracle:ojdbc6:11.2.0.3')
+    compile('org.apache.tomcat:tomcat-jdbc')
+    compile('org.flywaydb:flyway-core:4.0.3')
+    compile('org.hibernate:hibernate-core')
+    compile('org.projectlombok:lombok:1.18.2')
+
+    testCompile("org.codehaus.groovy:groovy-all:2.4.5")
+    testCompile("org.codehaus.groovy.modules.http-builder:http-builder:0.7.1")
+    testCompile("org.spockframework:spock-core:1.0-groovy-2.4")
+}
+
+task testRun(dependsOn: bootRun){
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(bootRun)) {
+            bootRun {
+                jvmArgs = ["-Dspring.profiles.active=test"]
+            }
+        }
+    }
+}
+
+task startDocker(type: Exec){
+    commandLine 'docker', 'start', oracleDockerId
+}
+
+task stopDocker(type: Exec){
+    commandLine 'docker', 'stop', oracleDockerId
+}
