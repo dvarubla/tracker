@@ -33,4 +33,25 @@ public class ProductServiceImpl implements ProductService {
         Shop shop = _entityManager.find(Shop.class, id.getId());
         _entityManager.remove(shop);
     }
+
+    @Override
+    public List<Product> getAllProducts() {
+        CriteriaQuery<Product> crt =_entityManager.getCriteriaBuilder().createQuery(Product.class);
+        crt.from(Product.class);
+        return _entityManager.createQuery(crt).getResultList();
+    }
+
+    @Override
+    @Transactional
+    public ID addProduct(Product product) {
+        _entityManager.persist(product);
+        return new ID(product.getId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteProduct(ID id) {
+        Product product = _entityManager.find(Product.class, id.getId());
+        _entityManager.remove(product);
+    }
 }
