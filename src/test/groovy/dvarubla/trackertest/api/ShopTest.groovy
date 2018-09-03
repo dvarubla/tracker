@@ -19,4 +19,13 @@ class ShopTest extends Spec{
         where:
             name << ["Shop1", "Shop2"]
     }
+
+    def "createMultipleShops"(){
+        when:
+        List<Long> ids = names.collect{client.post(shop, [name: it])["id"] as long}
+        then:
+        client.get(shop, [:]).sort() == [names, ids].transpose().collect{shop, id -> [name: shop, id: id]}.sort()
+        where:
+        names = ["Shop1", "Shop2", "Shop3"]
+    }
 }
