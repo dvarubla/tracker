@@ -4,6 +4,10 @@ spring:
       enabled: false
   main:
     banner_mode: 'off'
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: dvarubla.tracker.NamingStrategy
 server:
   port: 12345
   ssl:

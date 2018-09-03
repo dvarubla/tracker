@@ -11,9 +11,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productPk")
     @SequenceGenerator(
-            name = "product_sequence", sequenceName = "product_pk_seq",
+            name = "productPk", sequenceName = "productPk",
             allocationSize = 1
     )
     @Getter

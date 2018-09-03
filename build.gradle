@@ -47,6 +47,7 @@ dependencies {
     compile('org.flywaydb:flyway-core:4.0.3')
     compile('org.hibernate:hibernate-core')
     compile('org.projectlombok:lombok:1.18.2')
+    compile('org.apache.commons:commons-lang3:3.0')
 
     testCompile("org.codehaus.groovy:groovy-all:2.4.5")
     testCompile("org.codehaus.groovy.modules.http-builder:http-builder:0.7.1")
