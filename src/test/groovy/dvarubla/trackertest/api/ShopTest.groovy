@@ -28,4 +28,22 @@ class ShopTest extends Spec{
         where:
         names = ["Shop1", "Shop2", "Shop3"]
     }
+
+    @Unroll
+    def "deleteShops [#delIds]"(){
+        when:
+        def names = ["Shop1", "Shop2", "Shop3", "Shop4", "Shop5"]
+        def ids = names.collect{client.post(shop, [name: it])["id"] as long}
+        def pairs = [names, ids].transpose().collect{shop, id -> [name: shop, id: id]}
+        delIds.forEach{
+            client.delete(shop, [id: pairs.get(it).id])
+        }
+        delIds.sort().reverse().forEach{
+            pairs.removeAt(it)
+        }
+        then:
+        client.get(shop, [:]).sort() == pairs.sort()
+        where:
+        delIds << [[1,2,3], [0], [4,2]]
+    }
 }

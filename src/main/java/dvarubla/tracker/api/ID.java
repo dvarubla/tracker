@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @RequiredArgsConstructor
-class CreatedID {
+class ID {
     @NonNull
     @Getter
     @Setter

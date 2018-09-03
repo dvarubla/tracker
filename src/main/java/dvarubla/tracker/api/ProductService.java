@@ -4,5 +4,6 @@ import java.util.List;
 
 public interface ProductService {
     List<Shop> getAllShops();
-    CreatedID addShop(Shop shop);
+    ID addShop(Shop shop);
+    void deleteShop(ID id);
 }

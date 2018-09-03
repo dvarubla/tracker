@@ -22,8 +22,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public CreatedID addShop(Shop shop) {
+    public ID addShop(Shop shop) {
         _entityManager.persist(shop);
-        return new CreatedID(shop.getId());
+        return new ID(shop.getId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteShop(ID id){
+        Shop shop = _entityManager.find(Shop.class, id.getId());
+        _entityManager.remove(shop);
     }
 }

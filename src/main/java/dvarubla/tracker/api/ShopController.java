@@ -20,7 +20,12 @@ public class ShopController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public CreatedID add(@RequestBody Shop shop){
+    public ID add(@RequestBody Shop shop){
         return _productService.addShop(shop);
+    }
+
+    @DeleteMapping
+    public void delete(ID id){
+        _productService.deleteShop(id);
     }
 }
