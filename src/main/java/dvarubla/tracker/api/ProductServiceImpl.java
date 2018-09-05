@@ -63,6 +63,28 @@ public class ProductServiceImpl implements ProductService {
         return query.getResultList();
     }
 
+    private <T, TGen> Optional<T> findByUniqNameLock(Class<T> itemClass, Class<TGen> genClass, String name){
+        CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> crt = builder.createQuery(itemClass);
+        Root<T> from = crt.from(itemClass);
+        crt.select(from);
+        try {
+            //noinspection unchecked
+            crt.where(builder.equal(from.get((SingularAttribute<T, String>) genClass.getField("name").get(null)), name));
+        } catch (IllegalAccessException | NoSuchFieldException ignored) {
+        }
+        TypedQuery<T> query = _entityManager.createQuery(crt);
+        query.setLockMode(LockModeType.PESSIMISTIC_READ);
+        query.setFirstResult(0);
+        query.setMaxResults(1);
+        List<T> items = query.getResultList();
+        if(items.size() == 0){
+            return Optional.empty();
+        } else {
+            return Optional.of(items.get(0));
+        }
+    }
+
     @Override
     public List<Shop> getAllShops() {
         return getAllById(Shop.class, Shop_.class);
@@ -126,40 +148,12 @@ public class ProductServiceImpl implements ProductService {
         return getAllById(Purchase.class, Purchase_.class);
     }
 
-    private Optional<Shop> getShopByName(String shopName){
-        CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Shop> crt = builder.createQuery(Shop.class);
-        Root<Shop> from = crt.from(Shop.class);
-        crt.select(from);
-        crt.where(builder.equal(from.get(Shop_.name), shopName));
-        TypedQuery<Shop> query = _entityManager.createQuery(crt);
-        query.setLockMode(LockModeType.PESSIMISTIC_READ);
-        query.setFirstResult(0);
-        query.setMaxResults(1);
-        List<Shop> shops = query.getResultList();
-        if(shops.size() == 0){
-            return Optional.empty();
-        } else {
-            return Optional.of(shops.get(0));
-        }
+    private Optional<Shop> getShopByName(String name){
+        return findByUniqNameLock(Shop.class, Shop_.class, name);
     }
 
-    private Optional<Product> getProductByName(String productName){
-        CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> crt = builder.createQuery(Product.class);
-        Root<Product> from = crt.from(Product.class);
-        crt.select(from);
-        crt.where(builder.equal(from.get(Product_.name), productName));
-        TypedQuery<Product> query = _entityManager.createQuery(crt);
-        query.setLockMode(LockModeType.PESSIMISTIC_READ);
-        query.setFirstResult(0);
-        query.setMaxResults(1);
-        List<Product> products = query.getResultList();
-        if(products.size() == 0){
-            return Optional.empty();
-        } else {
-            return Optional.of(products.get(0));
-        }
+    private Optional<Product> getProductByName(String name){
+        return findByUniqNameLock(Product.class, Product_.class, name);
     }
 
     private Shop addShop(String name){
