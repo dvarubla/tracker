@@ -25,8 +25,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Shop> getAllShops() {
-        CriteriaQuery<Shop> crt =_entityManager.getCriteriaBuilder().createQuery(Shop.class);
-        crt.from(Shop.class);
+        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<Shop> crt = bld.createQuery(Shop.class);
+        Root<Shop> root = crt.from(Shop.class);
+        crt.orderBy(bld.asc(root.get(Shop_.id)));
         return _entityManager.createQuery(crt).getResultList();
     }
 
@@ -46,8 +48,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        CriteriaQuery<Product> crt =_entityManager.getCriteriaBuilder().createQuery(Product.class);
-        crt.from(Product.class);
+        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<Product> crt = bld.createQuery(Product.class);
+        Root<Product> root = crt.from(Product.class);
+        crt.orderBy(bld.asc(root.get(Product_.id)));
         return _entityManager.createQuery(crt).getResultList();
     }
 
@@ -67,8 +71,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Purchase> getAllPurchases() {
-        CriteriaQuery<Purchase> crt =_entityManager.getCriteriaBuilder().createQuery(Purchase.class);
-        crt.from(Purchase.class);
+        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<Purchase> crt = bld.createQuery(Purchase.class);
+        Root<Purchase> root = crt.from(Purchase.class);
+        crt.orderBy(bld.asc(root.get(Purchase_.id)));
         return _entityManager.createQuery(crt).getResultList();
     }
 
