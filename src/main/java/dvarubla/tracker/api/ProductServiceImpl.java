@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static dvarubla.tracker.api.DateSerializer.DATE_FORMAT_PATTERN;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -69,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         return _entityManager.createQuery(crt).getResultList();
     }
 
-    private Shop getShopByName(String shopName){
+    private Optional<Shop> getShopByName(String shopName){
         CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
         CriteriaQuery<Shop> crt = builder.createQuery(Shop.class);
         Root<Shop> from = crt.from(Shop.class);
@@ -79,10 +82,15 @@ public class ProductServiceImpl implements ProductService {
         query.setLockMode(LockModeType.PESSIMISTIC_READ);
         query.setFirstResult(0);
         query.setMaxResults(1);
-        return query.getResultList().get(0);
+        List<Shop> shops = query.getResultList();
+        if(shops.size() == 0){
+            return Optional.empty();
+        } else {
+            return Optional.of(shops.get(0));
+        }
     }
 
-    private Product getProductByName(String productName){
+    private Optional<Product> getProductByName(String productName){
         CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> crt = builder.createQuery(Product.class);
         Root<Product> from = crt.from(Product.class);
@@ -92,17 +100,38 @@ public class ProductServiceImpl implements ProductService {
         query.setLockMode(LockModeType.PESSIMISTIC_READ);
         query.setFirstResult(0);
         query.setMaxResults(1);
-        return query.getResultList().get(0);
+        List<Product> products = query.getResultList();
+        if(products.size() == 0){
+            return Optional.empty();
+        } else {
+            return Optional.of(products.get(0));
+        }
+    }
+
+    private Shop addShop(String name){
+        Shop shop = new Shop();
+        shop.setName(name);
+        _entityManager.persist(shop);
+        return shop;
+    }
+
+    private Product addProduct(String name){
+        Product product = new Product();
+        product.setName(name);
+        _entityManager.persist(product);
+        return product;
     }
 
     @Override
     @Transactional
     public List<ID> addPurchases(AddPurchasesRequest request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-        Shop shop = getShopByName(request.getShop());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
+        Optional<Shop> shopOpt = getShopByName(request.getShop());
+        Shop shop = shopOpt.orElseGet(() -> addShop(request.getShop()));
         List<ID> list = new ArrayList<>(request.getPurchases().size());
         for(AddPurchasesRequest.Purchase p : request.getPurchases()){
-            Product product = getProductByName(p.getProduct());
+            Optional<Product> productOpt = getProductByName(p.getProduct());
+            Product product = productOpt.orElseGet(() -> addProduct(p.getProduct()));
             LocalDateTime date = LocalDateTime.parse(p.getPurchaseDate(), formatter);
 
             Purchase purchase = new Purchase();

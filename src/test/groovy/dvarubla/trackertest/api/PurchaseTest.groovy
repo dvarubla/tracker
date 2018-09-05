@@ -24,6 +24,21 @@ class PurchaseTest extends Spec{
         parsePurchaseResp(client.get(purchase, [:])) == parsePurchaseQuery(shop, purchases)
     }
 
+    def "addOnlyPurchase"(){
+        given:
+        def shopName = "Shop1"
+        def purchases = [
+                [product: "Product1", price: 100.7, count: 10, purchaseDate: "11.09.2007 16:00"],
+                [product: "Product2", price: 100.3, count: 5,  purchaseDate: "21.09.2018 11:00"]
+        ]
+        def ids = client.post(purchase, [shop: shopName, purchases: purchases])
+        expect:
+        ids.size == 2
+        client.get(shop, [:])*.name == ["Shop1"]
+        client.get(product, [:])*.name == ["Product1", "Product2"]
+        parsePurchaseResp(client.get(purchase, [:])) == parsePurchaseQuery(shopName, purchases)
+    }
+
     def parsePurchaseQuery(shop, purchases){
         purchases.collect{it + [shop: shop]}
     }
