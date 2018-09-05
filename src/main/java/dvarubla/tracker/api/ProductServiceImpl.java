@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.SingularAttribute;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,13 +24,23 @@ public class ProductServiceImpl implements ProductService {
     @PersistenceContext
     private EntityManager _entityManager;
 
+    private <T, TGen> List<T> getAllById(Class<T> itemClass, Class<TGen> genClass){
+        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> crt = bld.createQuery(itemClass);
+        Root<T> root = crt.from(itemClass);
+        try {
+            //noinspection unchecked
+            crt.orderBy(bld.asc(root.get(
+                    (SingularAttribute<T, Long>) genClass.getField("id").get(null)
+            )));
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {
+        }
+        return _entityManager.createQuery(crt).getResultList();
+    }
+
     @Override
     public List<Shop> getAllShops() {
-        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Shop> crt = bld.createQuery(Shop.class);
-        Root<Shop> root = crt.from(Shop.class);
-        crt.orderBy(bld.asc(root.get(Shop_.id)));
-        return _entityManager.createQuery(crt).getResultList();
+        return getAllById(Shop.class, Shop_.class);
     }
 
     @Override
@@ -48,11 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Product> crt = bld.createQuery(Product.class);
-        Root<Product> root = crt.from(Product.class);
-        crt.orderBy(bld.asc(root.get(Product_.id)));
-        return _entityManager.createQuery(crt).getResultList();
+        return getAllById(Product.class, Product_.class);
     }
 
     @Override
@@ -71,11 +78,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Purchase> getAllPurchases() {
-        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Purchase> crt = bld.createQuery(Purchase.class);
-        Root<Purchase> root = crt.from(Purchase.class);
-        crt.orderBy(bld.asc(root.get(Purchase_.id)));
-        return _entityManager.createQuery(crt).getResultList();
+        return getAllById(Purchase.class, Purchase_.class);
     }
 
     private Optional<Shop> getShopByName(String shopName){
