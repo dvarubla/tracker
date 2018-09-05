@@ -2,6 +2,8 @@ spring:
   mvc:
     favicon:
       enabled: false
+  resources:
+    static-locations: file:./../static
   main:
     banner_mode: 'off'
   jpa:
