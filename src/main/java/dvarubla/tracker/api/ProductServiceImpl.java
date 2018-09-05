@@ -39,6 +39,30 @@ public class ProductServiceImpl implements ProductService {
         return _entityManager.createQuery(crt).getResultList();
     }
 
+    private <T, TGen> List<T> findByNameLike(Class<T> itemClass, Class<TGen> genClass, String name, int limit){
+        String escName = name.replaceAll("[_%]", "");
+        CriteriaBuilder bld = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<T> crt = bld.createQuery(itemClass);
+        Root<T> root = crt.from(itemClass);
+        crt.select(root);
+        try {
+            //noinspection unchecked
+            crt.where(bld.like(root.get(
+                    (SingularAttribute<T, String>) genClass.getField("name").get(null)),
+                    "%" + escName + "%")
+            );
+            //noinspection unchecked
+            crt.orderBy(bld.asc(root.get(
+                    (SingularAttribute<T, Long>) genClass.getField("id").get(null)
+            )));
+        } catch (IllegalAccessException | NoSuchFieldException ignored) {
+        }
+        TypedQuery<T> query = _entityManager.createQuery(crt);
+        query.setFirstResult(0);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
     @Override
     public List<Shop> getAllShops() {
         return getAllById(Shop.class, Shop_.class);
@@ -51,17 +75,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Shop> findShopsByName(String name, int limit) {
-        String escName = name.replaceAll("[_%]", "");
-        CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
-        CriteriaQuery<Shop> crt = builder.createQuery(Shop.class);
-        Root<Shop> from = crt.from(Shop.class);
-        crt.select(from);
-        crt.where(builder.like(from.get(Shop_.name), "%" + escName + "%"));
-        crt.orderBy(builder.asc(from.get(Shop_.id)));
-        TypedQuery<Shop> query = _entityManager.createQuery(crt);
-        query.setFirstResult(0);
-        query.setMaxResults(limit);
-        return query.getResultList();
+        return findByNameLike(Shop.class, Shop_.class, name, limit);
     }
 
     @Override
@@ -81,6 +95,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllProducts() {
         return getAllById(Product.class, Product_.class);
+    }
+
+    @Override
+    public List<Product> findProductsByName(String name) {
+        return findProductsByName(name, MAX_SEARCH_RESULTS);
+    }
+
+    @Override
+    public List<Product> findProductsByName(String name, int limit) {
+        return findByNameLike(Product.class, Product_.class, name, limit);
     }
 
     @Override

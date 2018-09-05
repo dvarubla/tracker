@@ -4,7 +4,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 @RestController
 @RequestMapping(value = "/api/product")
 public class ProductController {
@@ -15,8 +17,16 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> getAll(){
-        return _productService.getAllProducts();
+    public List<Product> getAll(Optional<String> query, Optional<Integer> limit){
+        if(query.isPresent()){
+            if(limit.isPresent()){
+                return _productService.findProductsByName(query.get(), limit.get());
+            } else {
+                return _productService.findProductsByName(query.get());
+            }
+        } else {
+            return _productService.getAllProducts();
+        }
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

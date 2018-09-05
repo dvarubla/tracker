@@ -10,6 +10,8 @@ public interface ProductService {
     void deleteShop(ID id);
 
     List<Product> getAllProducts();
+    List<Product> findProductsByName(String name);
+    List<Product> findProductsByName(String name, int limit);
     ID addProduct(Product product);
     void deleteProduct(ID id);
 
