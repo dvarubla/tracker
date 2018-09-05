@@ -21,6 +21,7 @@ import static dvarubla.tracker.api.DateSerializer.DATE_FORMAT_PATTERN;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+    private static final int MAX_SEARCH_RESULTS = 6;
     @PersistenceContext
     private EntityManager _entityManager;
 
@@ -41,6 +42,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Shop> getAllShops() {
         return getAllById(Shop.class, Shop_.class);
+    }
+
+    @Override
+    public List<Shop> findShopsByName(String name) {
+        return findShopsByName(name, MAX_SEARCH_RESULTS);
+    }
+
+    @Override
+    public List<Shop> findShopsByName(String name, int limit) {
+        String escName = name.replaceAll("[_%]", "");
+        CriteriaBuilder builder = _entityManager.getCriteriaBuilder();
+        CriteriaQuery<Shop> crt = builder.createQuery(Shop.class);
+        Root<Shop> from = crt.from(Shop.class);
+        crt.select(from);
+        crt.where(builder.like(from.get(Shop_.name), "%" + escName + "%"));
+        crt.orderBy(builder.asc(from.get(Shop_.id)));
+        TypedQuery<Shop> query = _entityManager.createQuery(crt);
+        query.setFirstResult(0);
+        query.setMaxResults(limit);
+        return query.getResultList();
     }
 
     @Override

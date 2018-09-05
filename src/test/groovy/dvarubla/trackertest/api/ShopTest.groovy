@@ -30,6 +30,34 @@ class ShopTest extends Spec{
     }
 
     @Unroll
+    def "searchByName '#query': #result"(){
+        given:
+        def names = ["Shop1", "Shop12", "Shop3"]
+        names.collect{client.post(shop, [name: it])["id"] as long}
+        expect:
+        client.get(shop, [query: query])*.name == result
+        where:
+        query  | result
+        "op1"  | ["Shop1", "Shop12"]
+        "o"    | ["Shop1", "Shop12", "Shop3"]
+        "op33" | []
+    }
+
+    @Unroll
+    def "searchByNameWithLimit '#query' #limit: #result"(){
+        given:
+        def names = ["Shop1", "Shop12", "Shop3"]
+        names.collect{client.post(shop, [name: it])["id"] as long}
+        expect:
+        client.get(shop, [query: query, limit: limit])*.name == result
+        where:
+        query  | limit | result
+        "op1"  | 1     | ["Shop1"]
+        "o"    | 2     | ["Shop1", "Shop12"]
+        "op33" | 3     | []
+    }
+
+    @Unroll
     def "deleteShops [#delIds]"(){
         when:
         def names = ["Shop1", "Shop2", "Shop3", "Shop4", "Shop5"]
