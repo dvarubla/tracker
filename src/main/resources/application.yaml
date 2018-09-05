@@ -8,6 +8,9 @@ spring:
     hibernate:
       naming:
         physical-strategy: dvarubla.tracker.NamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle10gDialect
 server:
   port: 12345
   ssl:
@@ -17,5 +20,9 @@ server:
 ---
 spring:
   profiles: test
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
 server:
   port: 12347

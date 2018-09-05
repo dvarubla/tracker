@@ -3,5 +3,6 @@ package dvarubla.trackertest.api
 enum APIName {
     all,
     shop,
-    product
+    product,
+    purchase
 }

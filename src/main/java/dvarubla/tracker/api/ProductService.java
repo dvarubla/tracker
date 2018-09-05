@@ -10,4 +10,7 @@ public interface ProductService {
     List<Product> getAllProducts();
     ID addProduct(Product product);
     void deleteProduct(ID id);
+
+    List<Purchase> getAllPurchases();
+    List<ID> addPurchases(AddPurchasesRequest request);
 }

@@ -1,9 +1,13 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
+        classpath("gradle.plugin.at.comm_unity.gradle.plugins:jpamodelgen-plugin:1.1.4")
     }
 }
 
@@ -12,6 +16,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: "at.comm_unity.gradle.plugins.jpamodelgen"
 
 bootJar {
     baseName = 'test-task'
@@ -27,6 +32,7 @@ sourceSets {
     main {
         java {
             srcDir 'src/main/java'
+            srcDir 'out/production/classes/generated'
         }
     }
     test {
@@ -46,8 +52,10 @@ dependencies {
     compile('org.apache.tomcat:tomcat-jdbc')
     compile('org.flywaydb:flyway-core:4.0.3')
     compile('org.hibernate:hibernate-core')
+    compile('org.hibernate:hibernate-jpamodelgen')
     compile('org.projectlombok:lombok:1.18.2')
     compile('org.apache.commons:commons-lang3:3.0')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-hibernate5')
 
     testCompile("org.codehaus.groovy:groovy-all:2.4.5")
     testCompile("org.codehaus.groovy.modules.http-builder:http-builder:0.7.1")
