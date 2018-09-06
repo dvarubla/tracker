@@ -47,9 +47,9 @@ public class ProductServiceImpl implements ProductService {
         crt.select(root);
         try {
             //noinspection unchecked
-            crt.where(bld.like(root.get(
-                    (SingularAttribute<T, String>) genClass.getField("name").get(null)),
-                    "%" + escName + "%")
+            crt.where(bld.like(bld.lower(root.get(
+                    (SingularAttribute<T, String>) genClass.getField("name").get(null))),
+                    "%" + escName.toLowerCase() + "%")
             );
             //noinspection unchecked
             crt.orderBy(bld.asc(root.get(
