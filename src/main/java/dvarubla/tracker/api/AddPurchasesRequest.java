@@ -14,17 +14,18 @@ class AddPurchasesRequest {
     static class Purchase{
         @Getter
         @Setter
-        private String purchaseDate;
-        @Getter
-        @Setter
         private BigDecimal price;
         @Getter
         @Setter
         private String product;
         @Getter
         @Setter
-        private int count;
+        private BigDecimal count;
     }
+
+    @Getter
+    @Setter
+    private String purchaseDate;
 
     @Getter
     @Setter

@@ -37,7 +37,7 @@ class Purchase {
 
     @Getter
     @Setter
-    private int count;
+    private BigDecimal count;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopId")

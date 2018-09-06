@@ -180,7 +180,7 @@ public class ProductServiceImpl implements ProductService {
         for(AddPurchasesRequest.Purchase p : request.getPurchases()){
             Optional<Product> productOpt = getProductByName(p.getProduct());
             Product product = productOpt.orElseGet(() -> addProduct(p.getProduct()));
-            LocalDateTime date = LocalDateTime.parse(p.getPurchaseDate(), formatter);
+            LocalDateTime date = LocalDateTime.parse(request.getPurchaseDate(), formatter);
 
             Purchase purchase = new Purchase();
             purchase.setPrice(p.getPrice());

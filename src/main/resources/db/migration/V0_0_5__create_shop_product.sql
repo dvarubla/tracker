@@ -3,7 +3,7 @@ create table "dbuser".purchase(
   shop_id int not null,
   product_id int not null,
   price number(10, 4) not null,
-  count int not null,
+  count number(10, 3) not null,
   purchase_date timestamp not null,
   constraint unique_item unique (shop_id, product_id, purchase_date),
   constraint fk_shop_id
