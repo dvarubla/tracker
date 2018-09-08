@@ -4,5 +4,7 @@ enum APIName {
     all,
     shop,
     product,
-    purchase
+    purchase,
+    stat,
+    totalMoney
 }

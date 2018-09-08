@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -50,4 +51,8 @@ class Purchase {
     @Getter
     @Setter
     private Product product;
+
+    @Formula("count * price")
+    @Getter
+    private BigDecimal totalCost;
 }

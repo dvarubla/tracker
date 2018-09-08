@@ -12,8 +12,12 @@ class APIClient {
         _client.ignoreSSLIssues()
     }
 
+    private static def convertToSnake(methodName){
+        methodName.replaceAll(/\B[A-Z]/) { '-' + it }.toLowerCase()
+    }
+
     private def callMethod(methodName, name, queryData){
-        Map params = [path: name]
+        Map params = [path: convertToSnake(name)]
         if(methodName == "post"){
             params += [body: queryData, contentType: JSON]
         } else {
@@ -22,15 +26,19 @@ class APIClient {
         _client."$methodName"(params).data
     }
 
+    def get(List<APIName> names, Map queryData){
+        callMethod("get", names.join("/"), queryData)
+    }
+
     def get(APIName name, Map queryData){
-        callMethod("get", name, queryData)
+        callMethod("get", name.name(), queryData)
     }
 
     def post(APIName name, Map queryData){
-        callMethod("post", name, queryData)
+        callMethod("post", name.name(), queryData)
     }
 
     def delete(APIName name, Map queryData){
-        callMethod("delete", name, queryData)
+        callMethod("delete", name.name(), queryData)
     }
 }
