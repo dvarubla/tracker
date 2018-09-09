@@ -1,6 +1,5 @@
 package dvarubla.tracker.api;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +32,6 @@ class Purchase {
 
     @Getter
     @Setter
-    @JsonSerialize(using = DateSerializer.class)
     private LocalDateTime purchaseDate;
 
     @Getter

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static dvarubla.tracker.api.DateSerializer.DATE_FORMAT_PATTERN;
+import static dvarubla.tracker.api.DateTimeSerializer.DATE_TIME_FORMAT_PATTERN;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -173,7 +173,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public List<ID> addPurchases(AddPurchasesRequest request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
         Optional<Shop> shopOpt = getShopByName(request.getShop());
         Shop shop = shopOpt.orElseGet(() -> addShop(request.getShop()));
         List<ID> list = new ArrayList<>(request.getPurchases().size());

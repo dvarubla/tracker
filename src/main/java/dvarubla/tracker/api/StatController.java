@@ -22,4 +22,11 @@ public class StatController {
         res.put("totalMoney", _statService.getTotalMoney());
         return res;
     }
+
+    @GetMapping(value = "unit-plot")
+    Map<String, UnitPlotResponse> getUnitPlot(String startDate, String endDate){
+        HashMap<String, UnitPlotResponse> res = new HashMap<>();
+        res.put("plot", _statService.getOnePlot(startDate, endDate));
+        return res;
+    }
 }

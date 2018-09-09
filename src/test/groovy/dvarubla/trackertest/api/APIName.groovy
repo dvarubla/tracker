@@ -6,5 +6,6 @@ enum APIName {
     product,
     purchase,
     stat,
-    totalMoney
+    totalMoney,
+    unitPlot
 }

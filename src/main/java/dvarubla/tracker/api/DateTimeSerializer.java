@@ -6,26 +6,26 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.springframework.boot.jackson.JsonComponent;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @JsonComponent
-public class DateSerializer extends StdSerializer<LocalDate> {
-    static final String DATE_FORMAT_PATTERN = "dd.MM.yyyy";
+public class DateTimeSerializer extends StdSerializer<LocalDateTime> {
+    static final String DATE_TIME_FORMAT_PATTERN = "dd.MM.yyyy HH:mm";
     private static DateTimeFormatter formatter
-            = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
+            = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
 
-    public DateSerializer() {
+    public DateTimeSerializer() {
         this(null);
     }
 
-    private DateSerializer(Class<LocalDate> t) {
+    private DateTimeSerializer(Class<LocalDateTime> t) {
         super(t);
     }
 
     @Override
     public void serialize(
-            LocalDate value, JsonGenerator gen, SerializerProvider arg2
+            LocalDateTime value, JsonGenerator gen, SerializerProvider arg2
     ) throws IOException {
         gen.writeString(formatter.format(value));
     }
